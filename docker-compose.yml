@@ -37,6 +37,25 @@ services:
     networks:
       - hq_outlet_net
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: hq_outlet_frontend
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - hq_outlet_net
+
 volumes:
   db_data:
 
