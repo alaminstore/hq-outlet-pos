@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -7,7 +6,6 @@ import router from "./routes/index";
 import { errorHandler } from "./middleware/error";
 
 export function createApp() {
-  dotenv.config();
   const app = express();
 
   app.use(helmet());
