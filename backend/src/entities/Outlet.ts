@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+
 import { OutletMenuConfig } from "./OutletMenuConfig";
 import { Sale } from "./Sale";
 
@@ -6,6 +13,9 @@ import { Sale } from "./Sale";
 export class Outlet {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Column({ name: "outlet_code", unique: true, length: 6 })
+  outletCode!: string;
 
   @Column({ type: "text" })
   name!: string;
