@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRouter from "./auth";
+import masterMenuRouter from "./master-menu";
 
 const router = Router();
 
@@ -8,5 +9,6 @@ router.get("/health", (_req, res) => {
 });
 
 router.use(authRouter);
+router.use(masterMenuRouter);
 
 export default router;
