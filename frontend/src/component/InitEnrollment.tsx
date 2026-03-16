@@ -47,22 +47,23 @@ function InitEnrollment() {
 
     const result = await login(userType, code);
 
-    if (!result.ok) {
+    if (!result.success) {
       setError(
-        result.reason === "unauthorized"
+        result.error === "INVALID_CREDENTIALS"
           ? LOGIN_ERRORS.incorrectCode
-          : LOGIN_ERRORS.generic
+          : LOGIN_ERRORS.generic,
       );
       setLoading(false);
       return;
     }
 
     const identity: Identity =
-      result.data.author === "hq"
+      result.session.role === "hq"
         ? { author: "HQ" }
-        : { author: "Outlet", outlet_id: result.data.outlet_id };
+        : { author: "Outlet", outlet_id: result.session.outletId };
 
     localStorage.setItem("identity", JSON.stringify(identity));
+    window.dispatchEvent(new Event("identity:changed"));
     navigate(identity.author === "HQ" ? "/hq" : "/outlet", {
       replace: true,
     });
@@ -70,67 +71,110 @@ function InitEnrollment() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10 text-slate-900">
-      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-balance text-center text-2xl font-semibold tracking-tight">
-          Welcome to the HQ outled pos
-        </h1>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Your identity: HQ or Outlet Operator
-        </p>
+    <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
+      <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-200/70 p-8">
+        <div className="text-center mb-7">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-slate-900 rounded-xl mb-4">
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+              />
+              <polyline
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points="9 22 9 12 15 12 15 22"
+              />
+            </svg>
+          </div>
+          <h1 className="text-lg font-medium text-slate-900 mb-1">
+            HQ Outlet POS
+          </h1>
+          <p className="text-sm text-slate-500">Sign in to continue</p>
+        </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleSelect("hq")}
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
-              userType === "hq"
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-            }`}
-          >
-            HQ
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSelect("outlet")}
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
-              userType === "outlet"
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-            }`}
-          >
-            Outlet Operator
-          </button>
+        <div className="mb-5">
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-2.5">
+            Select your role
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleSelect("hq")}
+              className={`text-left px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
+                userType === "hq"
+                  ? "border-slate-900 bg-slate-900 text-white"
+                  : "border-slate-200 bg-white text-slate-800 hover:border-slate-300"
+              }`}
+            >
+              <span
+                className={`block text-xs mb-0.5 ${userType === "hq" ? "text-white/60" : "text-slate-400"}`}
+              >
+                Headquarters
+              </span>
+              HQ
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelect("outlet")}
+              className={`text-left px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
+                userType === "outlet"
+                  ? "border-slate-900 bg-slate-900 text-white"
+                  : "border-slate-200 bg-white text-slate-800 hover:border-slate-300"
+              }`}
+            >
+              <span
+                className={`block text-xs mb-0.5 ${userType === "outlet" ? "text-white/60" : "text-slate-400"}`}
+              >
+                Branch access
+              </span>
+              Outlet
+            </button>
+          </div>
         </div>
 
         {userType && (
-          <div className="mt-6 space-y-3">
-            <label className="block text-sm font-medium text-slate-700">
-              6 digit code
-              <input
-                type="password"
-                inputMode="numeric"
-                value={code}
-                onChange={(event) => handleCodeChange(event.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-                placeholder="Enter code"
-              />
-            </label>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-400 uppercase tracking-widest mb-2">
+                6-digit code
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={code}
+                  onChange={(e) => handleCodeChange(e.target.value)}
+                  placeholder="••••••"
+                  className="w-full px-3 py-2.5 pr-10 rounded-xl border border-slate-200 bg-white text-base tracking-widest text-slate-900 placeholder:text-slate-300 focus:border-slate-400 focus:outline-none transition"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                  {code.length}/6
+                </span>
+              </div>
+            </div>
 
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={loading}
-              className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+              disabled={loading || code.length < 6}
+              className="w-full py-2.5 rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
-              {loading ? "Signing in..." : "Go"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         )}
 
         {error && (
-          <p className="mt-4 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p className="mt-4 px-3 py-2.5 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600">
             {error}
           </p>
         )}
