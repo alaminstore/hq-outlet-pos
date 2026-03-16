@@ -1,35 +1,53 @@
 import axios from "axios";
+import apiBaseUrl from "../utils/apiBaseUrl";
 
-export type LoginResponse = {
-  ok: boolean;
-  author: "hq" | "outlet";
-  outlet_id?: number;
-};
+export type UserRole = "hq" | "outlet";
 
-const apiBaseUrl = import.meta.env.VITE_HQ_API_URL ?? "";
+export interface UserSession {
+  role: UserRole;
+  outletId?: number;
+}
 
 export type LoginResult =
-  | { ok: true; data: LoginResponse }
-  | { ok: false; reason: "unauthorized" | "unknown" };
+  | { success: true; session: UserSession }
+  | { success: false; error: "INVALID_CREDENTIALS" | "SERVER_ERROR" };
 
 export async function login(
-  userType: "hq" | "outlet",
+  userType: UserRole,
   password: string,
 ): Promise<LoginResult> {
   try {
-    const response = await axios.post<LoginResponse>(
+    const { data } = await axios.post<LoginResponse>(
       `${apiBaseUrl}/api/login`,
-      {
-        user_type: userType,
-        password,
-      },
+      { user_type: userType, password },
     );
 
-    return { ok: true, data: response.data };
-  } catch (err) {
-    if (axios.isAxiosError(err) && err.response?.status === 401) {
-      return { ok: false, reason: "unauthorized" };
-    }
-    return { ok: false, reason: "unknown" };
+    return {
+      success: true,
+      session: {
+        role: data.author,
+        outletId: data.outlet_id,
+      },
+    };
+  } catch (error) {
+    return handleLoginError(error);
   }
+}
+
+function handleLoginError(error: unknown): LoginResult {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    if (status === 401) {
+      return { success: false, error: "INVALID_CREDENTIALS" };
+    }
+  }
+
+  console.error("[LoginService] Unexpected error:", error);
+  return { success: false, error: "SERVER_ERROR" };
+}
+
+interface LoginResponse {
+  ok: boolean;
+  author: UserRole;
+  outlet_id?: number;
 }
