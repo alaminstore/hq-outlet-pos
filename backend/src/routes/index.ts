@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRouter from "./auth";
 import masterMenuRouter from "./master-menu";
 import outletRouter from "./outlet";
+import salesRouter from "./sales";
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.get("/health", (_req, res) => {
 router.use(authRouter);
 router.use(masterMenuRouter);
 router.use(outletRouter);
+router.use(salesRouter);
 
 export default router;
