@@ -146,10 +146,7 @@ function AppRoutes() {
         element={
           <RequireIdentity identity={identity}>
             {identity?.author === "Outlet" ? (
-              <OutletPage
-                outletId={identity.outlet_id}
-                outlet={outlet ?? undefined}
-              />
+              <OutletPage outlet={outlet ?? undefined} />
             ) : (
               <Navigate to="/hq" replace />
             )}
