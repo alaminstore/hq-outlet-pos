@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import {
   createMasterMenuItem,
-  listMasterMenu,
+  getMasterMenu,
 } from "../repositories/master-menu-repo";
 
 interface CreateMenuRequest {
@@ -14,7 +14,7 @@ export const masterMenu = async (req: Request, res: Response) => {
   const page = Math.max(Number(req.query.page) || 1, 1);
 
   try {
-    const { items, total } = await listMasterMenu(page, limit);
+    const { items, total } = await getMasterMenu(page, limit);
 
     return res.json({
       data: items,

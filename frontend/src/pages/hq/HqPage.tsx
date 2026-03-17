@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MasterMenuSection from "../../component/hq/MasterMenuSection";
 import OutletAssignmentSection from "../../component/hq/OutletAssignmentSection";
 
 function HqPage() {
   const navigate = useNavigate();
-  const [section, setSection] = useState<"master" | "outlet">("master");
+  const location = useLocation();
+  const section: "master" | "outlet" =
+    location.pathname === "/hq/outlet-assignment" ? "outlet" : "master";
 
   const handleLogout = () => {
     localStorage.removeItem("identity");
@@ -36,12 +37,10 @@ function HqPage() {
 
         {section === "master" ? (
           <MasterMenuSection
-            onGoToOutletAssignment={() => setSection("outlet")}
+            onGoToOutletAssignment={() => navigate("/hq/outlet-assignment")}
           />
         ) : (
-          <OutletAssignmentSection
-            onBackToMasterMenu={() => setSection("master")}
-          />
+          <OutletAssignmentSection onBackToMasterMenu={() => navigate("/hq")} />
         )}
       </div>
     </div>
