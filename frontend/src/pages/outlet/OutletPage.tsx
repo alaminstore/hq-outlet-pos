@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import type { Outlet } from "../../api/outlets";
 
 type OutletPageProps = {
   outletId?: number;
+  outlet?: Outlet;
 };
 
-function OutletPage({ outletId }: OutletPageProps) {
+function OutletPage({ outletId, outlet }: OutletPageProps) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("identity");
+    window.dispatchEvent(new Event("identity:changed"));
     navigate("/", { replace: true });
   };
 
@@ -28,7 +31,8 @@ function OutletPage({ outletId }: OutletPageProps) {
           </button>
         </div>
         <p className="mt-2 text-sm text-slate-600">
-          Signed in as Outlet. Outlet ID: {outletId ?? "-"}
+          Signed in as Outlet. Outlet: {outlet?.name ?? "Unknown"}
+          {outletId ? ` (ID: ${outletId})` : ""}
         </p>
       </div>
     </div>
