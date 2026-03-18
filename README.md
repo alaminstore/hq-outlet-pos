@@ -9,6 +9,9 @@ The HQ controls the master menu, assigns items to each outlet, and tracks overal
 
 ###### Online: https://hq-outlet-pos-frontend.onrender.com
 
+###### ERD Diagram:
+<img src="https://github.com/alaminstore/hq-outlet-pos/blob/0ed9cb97221e259ef12c56b8839ec3f5c2a395a4/docs/%5BERD%20%5D-hq-outlet-pos.png">
+
 ### Setup Instructions
 
 1. Requirements
