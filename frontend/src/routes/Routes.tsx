@@ -4,6 +4,7 @@ import InitEnrollment from "../component/InitEnrollment";
 import AddOutletItemsPage from "../component/hq/AddOutletItemsPage";
 import { fetchOutlets, type Outlet } from "../api/outlets";
 import HqPage from "../pages/hq/HqPage";
+import HqReportsPage from "../pages/hq/HqReportsPage";
 import OutletPage from "../pages/outlet/OutletPage";
 
 export type Identity = {
@@ -135,6 +136,18 @@ function AppRoutes() {
           <RequireIdentity identity={identity}>
             {identity?.author === "HQ" ? (
               <AddOutletItemsPage />
+            ) : (
+              <Navigate to="/outlet" replace />
+            )}
+          </RequireIdentity>
+        }
+      />
+      <Route
+        path="/hq/reports"
+        element={
+          <RequireIdentity identity={identity}>
+            {identity?.author === "HQ" ? (
+              <HqReportsPage />
             ) : (
               <Navigate to="/outlet" replace />
             )}

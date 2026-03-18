@@ -25,13 +25,22 @@ function HqPage() {
               </h1>
               <p className="mt-1 text-sm text-slate-600">Signed in as HQ.</p>
             </div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
-            >
-              Logout
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => navigate("/hq/reports")}
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
+              >
+                Reports
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
