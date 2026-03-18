@@ -32,9 +32,9 @@ export class Sale {
   createdAt!: Date;
 
   @ManyToOne(() => Outlet, (outlet) => outlet.sales, { onDelete: "CASCADE" })
-  @OneToMany(() => SaleItem, (item) => item.sale)
-  items!: SaleItem[];
-
   @JoinColumn({ name: "outlet_id" })
   outlet!: Outlet;
+
+  @OneToMany(() => SaleItem, (item) => item.sale)
+  items!: SaleItem[];
 }
