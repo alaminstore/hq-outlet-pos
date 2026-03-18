@@ -32,6 +32,20 @@ export async function fetchOutletMenuConfigs(
   return response.data;
 }
 
+export async function fetchAllOutletMenuConfigs(
+  outletId: number
+): Promise<OutletMenuConfigItem[]> {
+  const firstPage = await fetchOutletMenuConfigs(outletId, 1, 50);
+  const items = [...firstPage.items];
+
+  for (let page = firstPage.page + 1; page <= firstPage.total_pages; page += 1) {
+    const nextPage = await fetchOutletMenuConfigs(outletId, page, firstPage.per_page);
+    items.push(...nextPage.items);
+  }
+
+  return items;
+}
+
 export async function createOutletMenuConfig(
   outletId: number,
   menuItemId: number,
