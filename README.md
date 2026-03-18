@@ -7,6 +7,8 @@ The HQ controls the master menu, assigns items to each outlet, and tracks overal
 
 ###### Flow: One company → Multiple outlets → HQ assigns menu → Outlets process sales → HQ monitors reports.
 
+###### Online: https://hq-outlet-pos-frontend.onrender.com
+
 ### Setup Instructions
 
 1. Requirements
