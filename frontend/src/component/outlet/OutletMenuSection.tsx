@@ -124,7 +124,7 @@ export default function OutletMenuSection({ outletId }: Props) {
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-slate-800">Store Catalog</h2>
+          <h2 className="text-lg font-bold text-slate-800">Inventory Management</h2>
           <p className="text-sm text-slate-500">
             Manage inventory and process new sales.
           </p>
