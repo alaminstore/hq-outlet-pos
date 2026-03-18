@@ -16,6 +16,9 @@ The HQ controls the master menu, assigns items to each outlet, and tracks overal
 
 2. Run with Docker (recommended)
 
+- Copy environment files:
+  - `cd backend && cp .env.example .env`
+  - `cd ../frontend && cp .env.example .env`
 - Start services:
   - `docker network create hq_outlet_net` (if the network was not already created)
   - `docker-compose up --build`
@@ -25,14 +28,19 @@ The HQ controls the master menu, assigns items to each outlet, and tracks overal
 
 - Backend:
   - `cd backend`
+  - `cp .env.example .env`
   - `npm install`
   - `npm run dev`
 - Frontend:
   - `cd frontend`
+  - `cp .env.example .env`
   - `npm install`
   - `npm run dev`
 - Database:
   - Create a PostgreSQL database and set env vars in `backend/.env`
+
+  #### Note: 
+  ###### I intentionally did not remove the sample values from .env.example to keep setup quick and easy. In this project, those example values are not sensitive and are only provided for convenience.
 
 ## API Endpoints
 
