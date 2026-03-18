@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchMasterMenu, type MasterMenuItem } from "../../api/masterMenu";
+import { fetchAllMasterMenu, type MasterMenuItem } from "../../api/masterMenu";
+import { fetchOutlets, type Outlet } from "../../api/outlets";
 import {
   createOutletMenuConfigsBatch,
-  fetchOutletMenuConfigs,
+  fetchAllOutletMenuConfigs,
 } from "../../api/outletMenuConfigs";
 
 type SelectState = Record<number, { selected: boolean; stock_level: string }>;
@@ -14,6 +15,7 @@ function AddOutletItemsPage() {
   const outletIdParam = searchParams.get("outlet_id");
   const outletId = outletIdParam ? Number(outletIdParam) : NaN;
 
+  const [outlets, setOutlets] = useState<Outlet[]>([]);
   const [menuItems, setMenuItems] = useState<MasterMenuItem[]>([]);
   const [assignedIds, setAssignedIds] = useState<Set<number>>(new Set());
   const [selection, setSelection] = useState<SelectState>({});
@@ -28,13 +30,16 @@ function AddOutletItemsPage() {
     setLoading(true);
     setError("");
 
-    Promise.all([fetchMasterMenu(1, 200), fetchOutletMenuConfigs(outletId, 1, 500)])
-      .then(([master, configs]) => {
+    Promise.all([
+      fetchOutlets(),
+      fetchAllMasterMenu(),
+      fetchAllOutletMenuConfigs(outletId),
+    ])
+      .then(([outletList, masterItems, configs]) => {
         if (!isActive) return;
-        setMenuItems(master.items);
-        setAssignedIds(
-          new Set(configs.items.map((item) => item.menu_item_id))
-        );
+        setOutlets(outletList);
+        setMenuItems(masterItems);
+        setAssignedIds(new Set(configs.map((item) => item.menu_item_id)));
       })
       .catch(() => {
         if (isActive) setError("Unable to load menu items.");
@@ -50,7 +55,12 @@ function AddOutletItemsPage() {
 
   const availableItems = useMemo(
     () => menuItems.filter((item) => !assignedIds.has(item.id)),
-    [menuItems, assignedIds]
+    [menuItems, assignedIds],
+  );
+
+  const selectedOutlet = useMemo(
+    () => outlets.find((outlet) => outlet.id === outletId),
+    [outlets, outletId],
   );
 
   const toggleSelect = (id: number, selected: boolean) => {
@@ -141,7 +151,8 @@ function AddOutletItemsPage() {
               Add Items to Outlet
             </h1>
             <p className="mt-1 text-sm text-slate-600">
-              Outlet ID: {outletId}
+              Outlet: {selectedOutlet?.name} (#
+              {selectedOutlet?.outletCode})
             </p>
           </div>
           <div className="flex gap-2">
@@ -195,7 +206,10 @@ function AddOutletItemsPage() {
                     <td className="px-4 py-3">{item.name}</td>
                     <td className="px-4 py-3 text-slate-500">{item.sku}</td>
                     <td className="px-4 py-3 text-slate-500">
-                      ${item.basePrice.toFixed(2)}
+                      {item.basePrice.toFixed(2)}
+                      <span className="text-[10px] text-slate-400 ml-1">
+                        BDT
+                      </span>
                     </td>
                     <td className="px-4 py-3">
                       <input

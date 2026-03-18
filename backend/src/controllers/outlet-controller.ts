@@ -3,6 +3,7 @@ import { connectDB } from "../config/db-config";
 
 type OutletRow = {
   id: number;
+  outletCode: string;
   name: string;
 };
 
@@ -19,7 +20,9 @@ type OutletMenuConfigRow = {
 
 export async function list(req: Request, res: Response) {
   const rows = (await connectDB.query(
-    `SELECT id, name FROM outlets ORDER BY id ASC`
+    `SELECT id, outlet_code AS "outletCode", name
+       FROM outlets
+      ORDER BY id ASC`
   )) as OutletRow[];
 
   return res.json({ items: rows });

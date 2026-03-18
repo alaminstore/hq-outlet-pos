@@ -20,7 +20,7 @@ export default function MasterMenuSection({
   const [totalPages, setTotalPages] = useState(1);
 
   const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false); 
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({ name: "", price: "" });
@@ -142,7 +142,10 @@ export default function MasterMenuSection({
                   className="hover:bg-slate-50/50 transition-colors"
                 >
                   <td className="px-4 py-3 font-medium">{item.name}</td>
-                  <td className="px-4 py-3">${item.basePrice.toFixed(2)}</td>
+                  <td className="px-4 py-3">
+                    {item.basePrice.toFixed(2)}
+                    <span className="text-[10px] text-slate-400 ml-1">BDT</span>
+                  </td>
                   <td className="px-4 py-3 text-slate-400 font-mono text-xs">
                     {item.sku}
                   </td>

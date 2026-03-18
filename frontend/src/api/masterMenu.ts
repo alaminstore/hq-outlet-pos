@@ -57,6 +57,18 @@ export async function fetchMasterMenu(
   };
 }
 
+export async function fetchAllMasterMenu(): Promise<MasterMenuItem[]> {
+  const firstPage = await fetchMasterMenu(1, 50);
+  const items = [...firstPage.items];
+
+  for (let page = firstPage.page + 1; page <= firstPage.totalPages; page += 1) {
+    const nextPage = await fetchMasterMenu(page, firstPage.perPage);
+    items.push(...nextPage.items);
+  }
+
+  return items;
+}
+
 export async function createMasterMenuItem(
   name: string,
   basePrice: number

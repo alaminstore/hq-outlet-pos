@@ -3,6 +3,7 @@ import apiBaseUrl from "../utils/apiBaseUrl";
 
 export type Outlet = {
   id: number;
+  outletCode: string;
   name: string;
 };
 
