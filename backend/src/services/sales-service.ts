@@ -1,31 +1,10 @@
 import { connectDB } from "../config/db-config";
-
-export type SaleItemInput = {
-  menu_item_id: number;
-  quantity: number;
-};
-
-type ConfigRow = {
-  menu_item_id: number;
-  stock_level: number;
-  outlet_price: string;
-};
-
-type SaleRow = {
-  id: number;
-  receipt_number: number;
-  total_amount: string;
-  created_at: string;
-};
-
-export class ServiceError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}
+import { ServiceError } from "../errors/service-error";
+import type {
+  ConfigRow,
+  SaleItemInput,
+  SaleRow,
+} from "./types/sales-service.types";
 
 export async function createSaleService(
   outletId: number,
